@@ -1,0 +1,8 @@
+# vim temporary files.
+*.swp
+
+# Python byte-coded files (library, filter_plugins, ...).
+*.pyc
+
+# Environments files to source.
+env*.sh
