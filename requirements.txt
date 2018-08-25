@@ -1,0 +1,4 @@
+pyyaml
+yamlloader
+requests
+git+https://git.unistra.fr/di/glpi/python-glpi-api@dev
