@@ -14,6 +14,7 @@ import yamlloader
 import requests
 from glpi_api import GLPI, GLPIError
 
+PY_VERSION = sys.version_info.major
 
 # HTTP requests debugging (FIXME: add an option?)
 #import logging
@@ -77,7 +78,7 @@ def main():
             update_inventory_from_group(group, group_conf, parents_conf={})
 
         # Generate 'all' group from inventory.
-        for group in inventory.keys() - ['all', 'ungrouped', '_meta']:
+        for group in set(inventory.keys()) - set(['all', 'ungrouped', '_meta']):
             inventory['all']['children'].append(group)
             inventory['all']['hosts'].extend(inventory[group].get('hosts', []))
         inventory['all']['hosts'] = sorted(set(inventory['all']['hosts']))
@@ -235,8 +236,8 @@ def merge_parents_conf(group_conf, parents_conf):
 
     # Merge vars and hostvars parameters (set to an empty dict if not defined).
     for param in ('vars', 'hostvars'):
-        group_conf[param] = {**group_conf.get(param, {}),
-                             **parents_conf.get(param, {})}
+        group_conf[param] = group_conf.get(param, {})
+        group_conf[param].update(parents_conf.get(param, {}))
 
 def update_inventory(group, group_conf):
     """Update Ansible ``inventory`` with ``group`` based on ``group_conf``
@@ -296,7 +297,11 @@ def replace_fields_values(value, data, default=''):
             return data[field_idx]
         # Replace in string with the value from data.
         else:
-            value = re.sub(r'\${}'.format(field_idx), str(data[field_idx]), value)
+            # Ugly hack for Python 2.7 and ensuring values are str/unicode.
+            data_value = (unicode(data[field_idx])
+                          if PY_VERSION < 3
+                          else str(data[field_idx]))
+            value = re.sub(r'\${}'.format(field_idx), data_value, value)
     return value
 
 if __name__ == '__main__':
