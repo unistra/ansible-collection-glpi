@@ -89,7 +89,7 @@ def main():
             inventory = inventory['_meta']['hostvars'][args['host']]
 
         # Print inventory as JSON as required.
-        print(json.dumps(inventory))
+        print(json.dumps(inventory, indent=4))
     except GLPIError as err:
         print('unable to connect to GLPI: {:s}'.format(str(err)))
         sys.exit(1)
