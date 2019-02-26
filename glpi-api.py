@@ -114,24 +114,25 @@ def init_cli():
 
     # Options for connecting to GLPI.
     parser.add_argument('--glpi-url',
-                        default=os.environ.get('GLPI_API_URL'),
+                        default=os.environ.get('ANSIBLE_GLPI_URL'),
                         help='URL for connecting to GLPI (default from '
-                             '$GLPI_API_URL)')
+                             'environment variable $ANSIBLE_GLPI_URL).')
     parser.add_argument('--glpi-usertoken',
-                        default=os.environ.get('GLPI_API_USERTOKEN'),
+                        default=os.environ.get('ANSIBLE_GLPI_USERTOKEN'),
                         help='User token for connecting to GLPI (default from '
-                             '$GLPI_API_USERTOKEN)')
+                             'environment variable $ANSIBLE_GLPI_USERTOKEN).')
     parser.add_argument('--glpi-apptoken',
-                        default=os.environ.get('GLPI_API_APPTOKEN'),
+                        default=os.environ.get('ANSIBLE_GLPI_APPTOKEN'),
                         help='Password for connecting to GLPI (default from '
-                             '$GLPI_API_APPTOKEN)')
+                             'environment variable $ANSIBLE_GLPI_APPTOKEN).')
 
     # Path to groups configuration file.
     config_path = os.path.join(os.path.dirname(__file__), 'glpi-api.yml')
     parser.add_argument('--config-file',
-                        default=os.environ.get('GLPI_GROUPS_FILE', config_path),
+                        default=os.environ.get('ANSIBLE_GLPI_FILE', config_path),
                         metavar='GROUPS_CONFIG_PATH',
-                        help='Groups configuration (default from glpi-api.yml '
+                        help='Groups configuration (default from environment '
+                             'variable $ANSIBLE_GLPI_FILE or the file glpi-api.yml '
                              'beside this file)')
 
     # Ansible inventory options.
