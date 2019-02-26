@@ -274,7 +274,7 @@ def update_inventory(group, group_conf):
         # Add host to the list of hosts for the group add update hostvars
         # of the host in inventory.
         for h in host:
-            hosts.append(h)
+            hosts.append(h.lower()) # Force host to be lowercase
             (inventory['_meta']['hostvars']
                 .setdefault(h, {})
                 .setdefault('glpi', {})
