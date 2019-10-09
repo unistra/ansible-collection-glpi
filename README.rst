@@ -13,11 +13,8 @@ Theses python modules must be installed on the controller:
 * `pyyaml <https://pypi.org/project/pyyaml>`_ for manipulating YAML files
 * `yamlloader <https://pypi.org/project/yamlloader/>`_ for keeping configuration
   order
-* `glpi <https://git.unistra.fr/di/python-glpi@dev>`_ for interacting with GLPI
+* `glpi <https://github.com/unistra/python-glpi-api>`_ for interacting with GLPI
   REST API
-
-    * `requests <https://pypi.org/project/yamlloader/>`_ for HTTP requests (used
-      by `glpi` module)
 
 There is a requirements file containing these dependencies so, if you don't care
 about clean integration to the system (using virtualenvs, distribution packages,
@@ -132,12 +129,14 @@ Usage
 
 The command-line take theses options:
 
-* `--glpi-url`: GLPI URL (default from `GLPI_API_URL` environment variable).
+* `--glpi-url`: GLPI URL (default from `ANSIBLE_GLPI_URL` environment variable).
 * `--glpi-apptoken`: API client token for connecting to the API (default from
-  `GLPI_API_APPTOKEN` environment variable).
+  `ANSIBLE_GLPI_APPTOKEN` environment variable; see Setup -> General -> API
+  -> <CLIENT> -> Application token (app_token)).
 * `--glpi-usertoken`: User token for connecting to the API (default from
-  `GLPI_API_USERTOKEN` environment variable).
-* `--config-file`: Path to the configuration file (default from `GLPI_GROUPS_FILE`
+  `ANSIBLE_GLPI_USERTOKEN` environment variable; see Administration -> Users
+  -> <USER> -> ALL -> Remote access keys -> API token).
+* `--config-file`: Path to the configuration file (default from `ANSIBLE_GLPI_FILE`
   environment variable or the *glpi-api.yml* beside the python file).
 * `--list`: Required Ansible option that generate the inventory.
 * `--host`: Return an host inventory (this generate the complete inventory and
