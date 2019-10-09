@@ -1,16 +1,16 @@
 ---
 #
-# Equipements réseau
+# Network equipments
 #
 nethosts:
   itemtype: NetworkEquipment
   fields: [1] # name
   criteria:
-  - { link: 'AND', field: 31, searchtype: contains, value: '^En production$' }
+  - { link: 'AND', field: 31, searchtype: contains, value: '^Running$' }
   hostname: $1
 
 #
-# Machines physiques
+# Physical servers
 #
 servers:
   #retrieve: yes
@@ -23,15 +23,20 @@ servers:
     - 33  # Domain.name
     - 23  # Manufacturer.name
     - 31  # State.completename
-  # Machines physique qui ne sont pas au stock (et donc forcément éteintes).
+    - 45  # OperatingSystem.name
+    - 46  # OperatingSystemVersion.name
+  retrieve: yes
   criteria:
   - { link: AND, field: 4, searchtype: contains, value: '^Rack Mount Chassis$' }
+  - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
   hostname: $1.$33
   hostvars:
     type: $4
     manufacturer: $23
     state: $31
     domain: $33
+    os_name: $45
+    os_version: $46
 
 dell:
   criteria:
@@ -43,7 +48,7 @@ hp:
 
 
 #
-# Serveurs
+# Servers by system
 #
 hosts:
   children: [unix, windows]
@@ -56,6 +61,8 @@ hosts:
     - 31  # State.completename
     - 45  # Item_OperatingSystem.OperatingSystem.name
     - 46  # Item_OperatingSystem.OperatingSystemVersion.name
+  criteria:
+  - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
   hostname: $1.$33
   hostvars:
     domain: $33
@@ -73,7 +80,7 @@ windows:
     ansible_connection: winrm
     ansible_winrm_transport: kerberos
     ansible_winrm_kinit_mode: manual
-    ansible_port: 5986
+    ansible_port: 5985
 
 windows2008:
   criteria:
@@ -124,6 +131,7 @@ ubuntu9:
   criteria:
   - { link: AND, field: 46, searchtype: contains, value: '^9' }
   # wsql1 et wsql2 ...
+  #- { link: OR, field: 45, searchtype: contains, value: '^Ubuntu 9.10$' }
 ubuntu10:
   criteria:
   - { link: AND, field: 46, searchtype: contains, value: '^10.04$' }
@@ -158,23 +166,21 @@ centos7:
 #
 # Virtualisation.
 #
-bes_hypervisors:
+kvm_hypervisors:
   itemtype: Computer
   fields: [1, 33, 160]
   criteria:
   - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
-  - { link: AND, field: 1, searchtype: contains, value: '^bes'}
   - { link: AND, field: 161, searchtype: contains, value: '^running$' }
   hostname: $1.$33
   hostvars:
     vms: $160
 
-bes_vms:
+kvm_vms:
   itemtype: Computer
   fields: [160]
   criteria:
   - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
-  - { link: AND, field: 1, searchtype: contains, value: '^bes'}
   - { link: AND, field: 161, searchtype: contains, value: '^running$' }
   hostname: $160
   hostvars:
