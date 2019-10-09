@@ -27,7 +27,7 @@ PY_VERSION = sys.version_info.major
 ##http_client.HTTPConnection.debuglevel = 1
 
 
-# Configuration parameters of a  group.
+# Configuration parameters of a group.
 GROUP_PARAMS = ('itemtype',         # GLPI item type
                 'criteria',         # GLPI search criteria
                 'metacriteria',     # GLPI search metacriteria
@@ -65,7 +65,7 @@ def main():
                     apptoken=args['glpi_apptoken'],
                     auth=args['glpi_usertoken'])
 
-        # Retrieve complete inventory from GLPI based on groups configuration.
+        # Initialize inventory.
         global inventory
         inventory = {'_meta': {'hostvars': {}},
                      'all': {'hosts': [], 'children': []}}
@@ -102,13 +102,19 @@ def main():
 # CLI
 #
 def init_cli():
-    """Initialize CLI and load configuration file.
+    """Initialize CLI and load the configuration file.
 
-    Parameters for connecting to GLPI are managed by this CLI but the default
-    values are set from theses environment variables.
+    Parameters for connecting to GLPI can be managed by this CLI but the
+    default values are set from theses environment variables:
 
-    This returns the arguments as a dict and groups configuration loaded from
-    the configuration file.
+    * ``ANSIBLE_GLPI_URL``: URL to the platform
+    * ``ANSIBLE_GLPI_USERTOKEN``: User token (Administration -> Users
+      -> <USER> -> ALL -> Remote access keys -> API token)
+    * ``ANSIBLE_GLPI_APPTOKEN``: API client token (Setup -> General
+      -> API -> <CLIENT> -> Application token (app_token))
+
+    This returns the arguments as a dict and the groups configuration
+    loaded from the configuration file.
     """
     parser = argparse.ArgumentParser(description='GLPI Inventory Module')
 
@@ -272,7 +278,7 @@ def update_inventory(group, group_conf):
         if not isinstance(host, list):
             host = [host]
         # Add host to the list of hosts for the group add update hostvars
-        # of the host in inventory.
+        # of the host in the inventory.
         for h in host:
             hosts.append(h.lower()) # Force host to be lowercase
             (inventory['_meta']['hostvars']
