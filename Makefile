@@ -1,9 +1,3 @@
-# As 'glpi_api' module is in a private repository on GitLab and configured to
-# be retrieved using ssh keys in the requirements file, the Makefile should be
-# launch like this:
-#
-# 	sudo -E make
-#
 DST=/local/ansible/inventories/glpi-api
 
 all: clean virtualenv install system

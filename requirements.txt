@@ -1,4 +1,4 @@
 pyyaml
 yamlloader
 requests
-git+ssh://git@git.unistra.fr/di/glpi/python-glpi-api@dev
+https://github.com/unistra/python-glpi-api
