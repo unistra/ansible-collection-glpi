@@ -1,200 +1,207 @@
 ---
-#
-# Network equipments
-#
-nethosts:
-  itemtype: NetworkEquipment
-  fields: [1] # name
-  criteria:
-  - { link: 'AND', field: 31, searchtype: contains, value: '^Running$' }
-  hostname: $1
+plugin: unistra.glpi.inv
 
-#
-# Physical servers
-#
-servers:
-  #retrieve: yes
-  children: [dell, hp]
-  itemtype: Computer
-  #fields: [1, 33, 23, 31] # name, domain, fabricant, state, type
-  fields:
-    - 1   # name
-    - 4   # ComputerType.name
-    - 33  # Domain.name
-    - 23  # Manufacturer.name
-    - 31  # State.completename
-    - 45  # OperatingSystem.name
-    - 46  # OperatingSystemVersion.name
-  retrieve: yes
-  criteria:
-  - { link: AND, field: 4, searchtype: contains, value: '^Rack Mount Chassis$' }
-  - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
-  hostname: $1.$33
-  hostvars:
-    type: $4
-    manufacturer: $23
-    state: $31
-    domain: $33
-    os_name: $45
-    os_version: $46
+glpi_url: <GLPI_URL>
+glpi_apptoken: <GLPI_APPTOKEN>
+glpi_auth: <GLPI_AUTH>
 
-dell:
-  criteria:
-  - { link: AND, field: 23, searchtype: contains, value: 'Dell' }
+queries:
+  #
+  # Network equipments
+  #
+  nethosts:
+    itemtype: NetworkEquipment
+    fields: [1] # name
+    criteria:
+    - { link: 'AND', field: 31, searchtype: contains, value: '^Running$' }
+    hostname: $1
 
-hp:
-  criteria:
-  - { link: AND, field: 23, searchtype: contains, value: 'HP' }
+  #
+  # Physical servers
+  #
+  servers:
+    #retrieve: yes
+    children: [dell, hp]
+    itemtype: Computer
+    #fields: [1, 205, 23, 31] # name, domain, fabricant, state, type
+    fields:
+      - 1   # name
+      - 4   # ComputerType.name
+      - 205 # Domain.name
+      - 23  # Manufacturer.name
+      - 31  # State.completename
+      - 45  # OperatingSystem.name
+      - 46  # OperatingSystemVersion.name
+    retrieve: yes
+    criteria:
+    - { link: AND, field: 4, searchtype: contains, value: '^Rack Mount Chassis$' }
+    - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
+    hostname: $1.$205
+    hostvars:
+      type: $4
+      manufacturer: $23
+      state: $31
+      domain: $205
+      os_name: $45
+      os_version: $46
+
+  dell:
+    criteria:
+    - { link: AND, field: 23, searchtype: contains, value: 'Dell' }
+
+  hp:
+    criteria:
+    - { link: AND, field: 23, searchtype: contains, value: 'HP' }
 
 
-#
-# Servers by system
-#
-hosts:
-  children: [unix, windows]
-  itemtype: Computer
-  fields:
-    - 1   # name
-    - 4   # ComputerType.name
-    - 33  # Domain.name
-    - 23  # Manufacturer.name
-    - 31  # State.completename
-    - 45  # Item_OperatingSystem.OperatingSystem.name
-    - 46  # Item_OperatingSystem.OperatingSystemVersion.name
-  criteria:
-  - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
-  hostname: $1.$33
-  hostvars:
-    domain: $33
-    type: $4
-    state: $31
-    os_name: $45
-    os_version: $46
+  #
+  # Servers by system
+  #
+  hosts:
+    children: [unix, windows]
+    itemtype: Computer
+    fields:
+      - 1   # name
+      - 4   # ComputerType.name
+      - 205  # Domain.name
+      - 23  # Manufacturer.name
+      - 31  # State.completename
+      - 45  # Item_OperatingSystem.OperatingSystem.name
+      - 46  # Item_OperatingSystem.OperatingSystemVersion.name
+    criteria:
+    - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
+    hostname: $1.$205
+    hostvars:
+      domain: $205
+      type: $4
+      state: $31
+      os_name: $45
+      os_version: $46
 
-## Windows servers
-windows:
-  children: [windows2008, windows2012, windows2016]
-  criteria:
-  - { link: AND, field: 45, searchtype: contains, value: 'Windows' }
-  vars:
-    ansible_connection: winrm
-    ansible_winrm_transport: kerberos
-    ansible_winrm_kinit_mode: manual
-    ansible_port: 5985
+  ## Windows servers
+  windows:
+    children: [windows2008, windows2012, windows2016]
+    criteria:
+    - { link: AND, field: 45, searchtype: contains, value: 'Windows' }
+    vars:
+      ansible_connection: winrm
+      ansible_winrm_transport: kerberos
+      ansible_winrm_kinit_mode: manual
+      ansible_port: 5985
 
-windows2008:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '2008' }
-windows2012:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '2012' }
-windows2016:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '2016' }
+  windows2008:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '2008' }
+  windows2012:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '2012' }
+  windows2016:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '2016' }
 
-## Unix servers
-unix:
-  children: [linux, bsd]
-  vars:
-    ansible_connection: ssh
-    ansible_port: 22
-    ansible_user: root
+  ## Unix servers
+  unix:
+    children: [linux, bsd]
+    vars:
+      ansible_connection: ssh
+      ansible_port: 22
+      ansible_user: root
 
-# BSD servers
-bsd: { children: [freebsd] }
+  # BSD servers
+  bsd: { children: [freebsd] }
 
-freebsd:
-  children: [freebsd7, freebsd10]
-  criteria:
-  - { link: AND, field: 45, searchtype: contains, value: 'FreeBSD' }
-freebsd7:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^7' }
-freebsd10:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^10' }
+  freebsd:
+    children: [freebsd7, freebsd10]
+    criteria:
+    - { link: AND, field: 45, searchtype: contains, value: 'FreeBSD' }
+  freebsd7:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^7' }
+  freebsd10:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^10' }
 
-## Linux servers
-linux: { children: [debian, ubuntu, centos] }
+  ## Linux servers
+  linux: { children: [debian, ubuntu, centos] }
 
-debian:
-  criteria:
-  - { link: AND, field: 45, searchtype: contains, value: 'Debian' }
+  debian:
+    criteria:
+    - { link: AND, field: 45, searchtype: contains, value: 'Debian' }
 
-ubuntu:
-  #retrieve: yes
-  children: [ubuntu9, ubuntu10, ubuntu12, ubuntu14, ubuntu16, ubuntu18]
-  criteria:
-  - { link: AND, field: 45, searchtype: contains, value: '^Ubuntu$' }
-  retrieve: yes # Force retrieving of all ubuntu hosts
-ubuntu9:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^9' }
-  # wsql1 et wsql2 ...
-  #- { link: OR, field: 45, searchtype: contains, value: '^Ubuntu 9.10$' }
-ubuntu10:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^10.04$' }
-ubuntu12:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^12.04$' }
-ubuntu14:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^14.04$' }
-ubuntu16:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^16.04$' }
-ubuntu18:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^18.04$' }
+  ubuntu:
+    #retrieve: yes
+    children: [ubuntu9, ubuntu10, ubuntu12, ubuntu14, ubuntu16, ubuntu18]
+    criteria:
+    - { link: AND, field: 45, searchtype: contains, value: '^Ubuntu$' }
+    retrieve: yes # Force retrieving of all ubuntu hosts
+  ubuntu9:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^9' }
+    # wsql1 et wsql2 ...
+    #- { link: OR, field: 45, searchtype: contains, value: '^Ubuntu 9.10$' }
+  ubuntu10:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^10.04$' }
+  ubuntu12:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^12.04$' }
+  ubuntu14:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^14.04$' }
+  ubuntu16:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^16.04$' }
+  ubuntu18:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^18.04$' }
 
-centos:
-  children: [centos5, centos6, centos7]
-  criteria:
-  - { link: AND, field: 45, searchtype: contains, value: '^CentOS$' }
-  retrieve: yes
-centos5:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^5' }
-centos6:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^6' }
-centos7:
-  criteria:
-  - { link: AND, field: 46, searchtype: contains, value: '^7' }
+  centos:
+    children: [centos5, centos6, centos7]
+    criteria:
+    - { link: AND, field: 45, searchtype: contains, value: '^CentOS$' }
+    retrieve: yes
+  centos5:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^5' }
+  centos6:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^6' }
+  centos7:
+    criteria:
+    - { link: AND, field: 46, searchtype: contains, value: '^7' }
 
-#
-# Virtualisation.
-#
-kvm_hypervisors:
-  itemtype: Computer
-  fields: [1, 33, 160]
-  criteria:
-  - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
-  - { link: AND, field: 161, searchtype: contains, value: '^running$' }
-  hostname: $1.$33
-  hostvars:
-    vms: $160
+  #
+  # Virtualisation.
+  #
+  kvm_hypervisors:
+    itemtype: Computer
+    fields: [1, 205, 160]
+    criteria:
+    - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
+    - { link: AND, field: 161, searchtype: contains, value: '^running$' }
+    hostname: $1.$205
+    hostvars:
+      vms: $160
 
-kvm_vms:
-  itemtype: Computer
-  fields: [160]
-  criteria:
-  - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
-  - { link: AND, field: 161, searchtype: contains, value: '^running$' }
-  hostname: $160
-  hostvars:
-    hypervisor: $1
+  kvm_vms:
+    itemtype: Computer
+    fields: [160]
+    criteria:
+    - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
+    - { link: AND, field: 161, searchtype: contains, value: '^running$' }
+    hostname: $160
+    hostvars:
+      hypervisor: $1
 
-#
-# Containers.
-#
-docker_containers:
-  itemtype: Computer
-  fields: [160]
-  criteria:
-  - { link: AND, field: 163, searchtype: contains, value: '^docker$' }
-  - { link: AND, field: 161, searchtype: contains, value: '^running$' }
-  hostname: $160
-  hostvars:
-    hypervisor: $1
+  #
+  # Containers.
+  #
+  docker_containers:
+    itemtype: Computer
+    fields: [160]
+    criteria:
+    - { link: AND, field: 163, searchtype: contains, value: '^docker$' }
+    - { link: AND, field: 161, searchtype: contains, value: '^running$' }
+    hostname: $160
+    hostvars:
+      hypervisor: $1
