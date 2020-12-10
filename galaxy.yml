@@ -1,0 +1,13 @@
+namespace: "unistra"
+name: "glpi"
+version: "0.1.0"
+readme: "README.rst"
+authors:
+- "François Ménabé <francois.menabe@unistra.fr>"
+dependencies: []
+license:
+- "GPL3"
+tags:
+- glpi
+repository: "https://github.com/unistra/ansible-inventory-glpi"
+issues: "https://github.com/unistra/ansible-inventory-glpi/issues"
