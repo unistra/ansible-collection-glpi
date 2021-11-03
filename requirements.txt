@@ -1,4 +1,3 @@
 pyyaml
 yamlloader
-requests
-https://github.com/unistra/python-glpi-api
+glpi-api
