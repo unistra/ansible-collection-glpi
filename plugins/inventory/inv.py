@@ -1,3 +1,4 @@
+import os
 import re
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.module_utils._text import to_native
@@ -76,12 +77,30 @@ class InventoryModule(BaseInventoryPlugin):
     def parse(self, inventory, loader, path, cache=True):
         super(InventoryModule, self).parse(inventory, loader, path, cache)
         config = self._read_config_data(path)
+
+        glpi_url = config.get('glpi_url', os.environ.get('GLPI_URL'))
+        glpi_apptoken = config.get('glpi_apptoken', os.environ.get('GLPI_APPTOKEN'))
+        glpi_usertoken = config.get('glpi_usertoken', os.environ.get('GLPI_USERTOKEN'))
+        glpi_username = config.get('glpi_username', os.environ.get('GLPI_USERNAME'))
+        glpi_password = config.get('glpi_password', os.environ.get('GLPI_PASSWORD'))
+
+        if glpi_url is None:
+            raise AnsibleError('GLPI url not provided')
+
+        if glpi_apptoken is None:
+            raise AnsibleError('GLPI application token not provided')
+
+        if glpi_usertoken is not None:
+            glpi_auth = glpi_usertoken
+        else:
+            if glpi_username is None or glpi_password is None:
+                raise AnsibleError('GLPI auth invalid: usertoken or username/password required ')
+            # Force str for vaulted string
+            glpi_auth = (glpi_username, glpi_password)
+
         try:
-            self.glpi = GLPI(
-                url=config['glpi_url'],
-                apptoken=config['glpi_apptoken'],
-                auth=config['glpi_auth']
-            )
+            # Force str for vaulted string
+            self.glpi = GLPI(url=glpi_url, apptoken=glpi_apptoken, auth=glpi_auth)
 
             # Recursively update inventory from configuration. Groups are popped
             # from config as they are parsed so this loop only pop root groups.
