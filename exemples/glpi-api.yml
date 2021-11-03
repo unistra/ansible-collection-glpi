@@ -3,7 +3,7 @@ plugin: unistra.glpi.inv
 
 glpi_url: <GLPI_URL>
 glpi_apptoken: <GLPI_APPTOKEN>
-glpi_auth: <GLPI_AUTH>
+glpi_usertoken: <GLPI_USERTOKEN>
 
 queries:
   #

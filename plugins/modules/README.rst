@@ -2,6 +2,8 @@
 GLPI modules
 ************
 
+This module is minimal and was quickly done without much thoughts!
+
 Exemple:
 
 .. code::
