@@ -96,11 +96,11 @@ class InventoryModule(BaseInventoryPlugin):
             if glpi_username is None or glpi_password is None:
                 raise AnsibleError('GLPI auth invalid: usertoken or username/password required ')
             # Force str for vaulted string
-            glpi_auth = (glpi_username, glpi_password)
+            glpi_auth = (str(glpi_username), str(glpi_password))
 
         try:
             # Force str for vaulted string
-            self.glpi = GLPI(url=glpi_url, apptoken=glpi_apptoken, auth=glpi_auth)
+            self.glpi = GLPI(url=str(glpi_url), apptoken=str(glpi_apptoken), auth=str(glpi_auth))
 
             # Recursively update inventory from configuration. Groups are popped
             # from config as they are parsed so this loop only pop root groups.
