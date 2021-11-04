@@ -35,6 +35,8 @@ Configuration file
 
   ## Platform parameters (can also be passed as environment variables)
   glpi_url: https://<DOMAIN>/apirest.php
+  #glpi_verify_certs:
+  #glpi_use_headers:
   glpi_apptoken:
   glpi_usertoken:
   # alternatively of the user token, username and password can be set.

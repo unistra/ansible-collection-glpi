@@ -2,8 +2,12 @@
 plugin: unistra.glpi.inv
 
 glpi_url: <GLPI_URL>
+#glpi_verify_certs: False
+#glpi_use_headers: False
 glpi_apptoken: <GLPI_APPTOKEN>
 glpi_usertoken: <GLPI_USERTOKEN>
+#glpi_username: <GLPI_USERNAME>
+#glpi_password: <GLPI_PASSWORD>
 
 queries:
   #

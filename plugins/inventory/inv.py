@@ -83,6 +83,14 @@ class InventoryModule(BaseInventoryPlugin):
         glpi_usertoken = config.get('glpi_usertoken', os.environ.get('GLPI_USERTOKEN'))
         glpi_username = config.get('glpi_username', os.environ.get('GLPI_USERNAME'))
         glpi_password = config.get('glpi_password', os.environ.get('GLPI_PASSWORD'))
+        glpi_verify_certs = config.get(
+            'glpi_verify_certs',
+            os.environ.get('GLPI_VERIFY_CERTS', 'True').lower() not in ('false', '0')
+        )
+        glpi_use_headers = config.get(
+            'glpi_use_headers',
+            os.environ.get('GLPI_USE_HEADERS', 'True').lower() not in ('false', '0')
+        )
 
         if glpi_url is None:
             raise AnsibleError('GLPI url not provided')
@@ -101,7 +109,13 @@ class InventoryModule(BaseInventoryPlugin):
 
         try:
             # Force str for vaulted strings
-            self.glpi = GLPI(url=str(glpi_url), apptoken=str(glpi_apptoken), auth=glpi_auth)
+            self.glpi = GLPI(
+                url=str(glpi_url),
+                apptoken=str(glpi_apptoken),
+                auth=glpi_auth,
+                verify_certs=glpi_verify_certs,
+                use_headers=glpi_use_headers
+            )
 
             # Recursively update inventory from configuration. Groups are popped
             # from config as they are parsed so this loop only pop root groups.
