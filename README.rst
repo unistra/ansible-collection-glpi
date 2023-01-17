@@ -35,7 +35,7 @@ To install the collection:
 
   # set collections directory to the current directory (default is ~/.ansible/collections)
   $ export ANSIBLE_COLLECTIONS_PATH=$(pwd)
-  $ ansible-galaxy collection install git+https://github.com/unistra/ansible-collection-glpi,1.1.0
+  $ ansible-galaxy collection install git+https://github.com/unistra/ansible-collection-glpi,1.1.1
 
 With a requirements file:
 
@@ -46,6 +46,6 @@ With a requirements file:
   collections:
   - name: https://github.com/unistra/ansible-collection-glpi
     type: git
-    version: 1.1.0
+    version: 1.1.1
 
   $ ansible-galaxy install -r requirements.yml
