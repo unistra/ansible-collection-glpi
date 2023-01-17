@@ -27,11 +27,11 @@ queries:
     #retrieve: yes
     children: [dell, hp]
     itemtype: Computer
-    #fields: [1, 205, 23, 31] # name, domain, fabricant, state, type
+    #fields: [1, 33, 23, 31] # name, domain, fabricant, state, type
     fields:
       - 1   # name
       - 4   # ComputerType.name
-      - 205 # Domain.name
+      - 33 # Domain.name
       - 23  # Manufacturer.name
       - 31  # State.completename
       - 45  # OperatingSystem.name
@@ -40,12 +40,12 @@ queries:
     criteria:
     - { link: AND, field: 4, searchtype: contains, value: '^Rack Mount Chassis$' }
     - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
-    hostname: $1.$205
+    hostname: $1.$33
     hostvars:
       type: $4
       manufacturer: $23
       state: $31
-      domain: $205
+      domain: $33
       os_name: $45
       os_version: $46
 
@@ -67,16 +67,16 @@ queries:
     fields:
       - 1   # name
       - 4   # ComputerType.name
-      - 205  # Domain.name
+      - 33  # Domain.name
       - 23  # Manufacturer.name
       - 31  # State.completename
       - 45  # Item_OperatingSystem.OperatingSystem.name
       - 46  # Item_OperatingSystem.OperatingSystemVersion.name
     criteria:
     - { link: AND, field: 31, searchtype: contains, value: '^Running$' }
-    hostname: $1.$205
+    hostname: $1.$33
     hostvars:
-      domain: $205
+      domain: $33
       type: $4
       state: $31
       os_name: $45
@@ -179,11 +179,11 @@ queries:
   #
   kvm_hypervisors:
     itemtype: Computer
-    fields: [1, 205, 160]
+    fields: [1, 33, 160]
     criteria:
     - { link: AND, field: 163, searchtype: contains, value: '^libvirt$' }
     - { link: AND, field: 161, searchtype: contains, value: '^running$' }
-    hostname: $1.$205
+    hostname: $1.$33
     hostvars:
       vms: $160
 
