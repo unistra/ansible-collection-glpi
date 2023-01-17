@@ -55,6 +55,7 @@ def core(module):
                         return {'changed': False, 'action': 'added',
                                 'msg': "action ignored as specified by 'ignore_actions'"
                                        "parameter"}
+                    glpi.add(itemtype, values)
                     return {'changed': True, 'action': 'added'}
                 else:
                     # nothing
